@@ -18,7 +18,7 @@ const Main = () => {
 
   function dragOverHandler(e) {
     e.preventDefault();
-    if (e.target.className === "sc-dkrFOg dHkZkE Item") {
+    if (e.target.className.includes("Item")) {
       e.target.style.boxShadow = "0 4px 7px gray";
     }
   }
