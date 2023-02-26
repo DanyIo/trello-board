@@ -1,47 +1,35 @@
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import RemoveIcon from "@mui/icons-material/Remove";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   selectTaskList,
   removeTask,
   addDraggedElement,
   addTask,
   fetchTask,
+  getTasks,
+  removeBoard,
 } from "../../features/task/taskSlice";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TaskModalWindow from "./taskModalWindow/taskModalWindow";
+import ChangeTaskModalWindow from "./editTaskModalWindow./ediTaskModalWindow";
 const Main = () => {
-  const [list, setList] = useState([]);
   const dispatch = useDispatch();
   const tasksList = useSelector(selectTaskList);
   const [currentBoard, setCurrentBoard] = useState();
   const [currentTask, setCurrentTask] = useState();
-  // useEffect(() => {
 
-  //   fetch("/get")
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       }
-  //     })
-  //     .then((jsonRes) => setList(jsonRes[0].tasksList));
-  // }, []);
+  useEffect(() => {
+    dispatch(getTasks());
+  }, []);
 
   useEffect(() => {
     dispatch(fetchTask({ tasksList: tasksList }));
+  });
 
-    fetch("/get")
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then((jsonRes) => setList(jsonRes[0].tasksList));
-  }, [tasksList]);
-
-  console.log("list", list);
-  console.log("taskList", tasksList);
   function dragOverHandler(e) {
     e.preventDefault();
     if (e.target.className.includes("Item")) {
@@ -92,9 +80,18 @@ const Main = () => {
       );
     }
   }
+  function showTime(ms) {
+    if ((Date.now() - ms) / 1000 < 60) {
+      return `${((Date.now() - ms) / 1000).toFixed(0)} sec ago`;
+    } else if ((Date.now() - ms) / 60000 < 60) {
+      return `${((Date.now() - ms) / 60000).toFixed(0)} min ago`;
+    } else {
+      return `${((Date.now() - ms) / 3600000).toFixed(0)} hours ago`;
+    }
+  }
   return (
     <MainDivStyled>
-      {Object.keys(list).map((list, boardIndex) => {
+      {Object.keys(tasksList).map((list, boardIndex) => {
         return (
           <TaskBoardStyled
             key={`${list}_${boardIndex}`}
@@ -102,6 +99,21 @@ const Main = () => {
             onDrop={(e) => dropCardHandler(e, boardIndex)}
           >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {tasksList[list].tasks.length === 0 && (
+                <IconButtonStyled
+                  aria-label="delete"
+                  id={boardIndex}
+                  onClick={() =>
+                    dispatch(
+                      removeBoard({
+                        boardIndex: boardIndex,
+                      })
+                    )
+                  }
+                >
+                  <RemoveIconStyled id={boardIndex}></RemoveIconStyled>
+                </IconButtonStyled>
+              )}
               <strong>{tasksList[list].name}</strong>
               <TaskModalWindow index={boardIndex} />
             </div>
@@ -119,10 +131,9 @@ const Main = () => {
                     }
                     onDragEnd={(e) => onDragEndHandler(e)}
                     onDrop={(e) => onDropHandler(e, boardIndex, taskIndex)}
-                  >
-                    {task.title}
+                  ><ChangeTaskModalWindow boardIndex = {boardIndex} taskIndex ={taskIndex}/>{task.title}
                     <div style={{ fontSize: "10px", color: "gray" }}>
-                      {task[Object.keys(task)]}
+                      {showTime(task.date)}
                     </div>
                     <IconButtonStyled
                       aria-label="delete"
@@ -138,6 +149,7 @@ const Main = () => {
                     >
                       <DeleteIconStyled id={taskIndex}></DeleteIconStyled>
                     </IconButtonStyled>
+
                   </TaskStyled>
                 );
               })}
@@ -154,10 +166,14 @@ const MainDivStyled = styled.div({
   justifyContent: "flex-start",
   alignItems: "flex-start",
 });
+const RemoveIconStyled = styled(RemoveIcon)(() => ({
+  color: "black",
+  position: "absolute",
+}));
 const TaskBoardStyled = styled.div({
   padding: "20px",
   height: "20%",
-  width: "15%",
+  width: "20%",
   background: "white",
   boxShadow: "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
   borderRadius: "20px",
@@ -186,5 +202,9 @@ const DeleteIconStyled = styled(DeleteIcon)(() => ({
   position: "absolute",
   color: "white",
 }));
-
+const EditIconStyled = styled(EditIcon)(() => ({
+  float: "right",
+  position: "absolute",
+  color: "white",
+}));
 export default Main;

@@ -6,12 +6,11 @@ import Modal from "@mui/material/Modal";
 import { Formik, Form, Field } from "formik";
 import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
-import { addTask } from "../../../features/task/taskSlice";
-import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
-import AddIcon from "@mui/icons-material/Add";
+import {changeTask } from "../../../features/task/taskSlice";
+import EditIcon from "@mui/icons-material/Edit";
 import { IconButton } from "@mui/material";
 
-export default function TaskModalWindow({ index }) {
+export default function ChangeTaskModalWindow({ boardIndex, taskIndex }) {
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -30,10 +29,10 @@ export default function TaskModalWindow({ index }) {
     <div>
       <IconButtonStyled
         aria-label="delete"
-        id={index}
+        id={taskIndex}
         onClick={() => handleOpen()}
       >
-        <AddIconStyled id={index}></AddIconStyled>
+        <EditIconStyled id={taskIndex}></EditIconStyled>
       </IconButtonStyled>
       <Modal
         open={open}
@@ -43,7 +42,7 @@ export default function TaskModalWindow({ index }) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Enter task
+            Enter changed task
           </Typography>
           <Formik
             initialValues={{
@@ -51,10 +50,12 @@ export default function TaskModalWindow({ index }) {
             }}
             onSubmit={async ({ name }) => {
               const data = {
-                name: { title: name, date: Date.now()},
-                index: index,
+                title: name,
+                boardIndex: boardIndex,
+                taskIndex: taskIndex,
+                date: Date.now()
               };
-              dispatch(addTask(data));
+             dispatch(changeTask(data));
               handleClose();
             }}
           >
@@ -74,9 +75,9 @@ export default function TaskModalWindow({ index }) {
                 <SendButtonStyled
                   variant="contained"
                   type="submit"
-                  endIcon={<LibraryAddCheckIcon />}
+                  endIcon={<EditIcon />}
                 >
-                  Add
+                  Change
                 </SendButtonStyled>
               </Form>
             )}
@@ -118,10 +119,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const AddIconStyled = styled(AddIcon)(() => ({
-  float: "right",
-  position: "absolute",
-}));
+
 const IconButtonStyled = styled(IconButton)(() => ({
   float: "right",
 }));
@@ -130,3 +128,9 @@ const ErrorDivStyled = styled.div({
   fontSize: "11px",
   padding: 5,
 });
+
+const EditIconStyled = styled(EditIcon)(() => ({
+  float: "right",
+  position: "absolute",
+  color: "white",
+}));
