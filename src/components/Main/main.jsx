@@ -1,21 +1,47 @@
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   selectTaskList,
   removeTask,
   addDraggedElement,
   addTask,
+  fetchTask,
 } from "../../features/task/taskSlice";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TaskModalWindow from "./taskModalWindow/taskModalWindow";
 const Main = () => {
-  const tasksList = useSelector(selectTaskList);
+  const [list, setList] = useState([]);
   const dispatch = useDispatch();
+  const tasksList = useSelector(selectTaskList);
   const [currentBoard, setCurrentBoard] = useState();
   const [currentTask, setCurrentTask] = useState();
+  // useEffect(() => {
 
+  //   fetch("/get")
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       }
+  //     })
+  //     .then((jsonRes) => setList(jsonRes[0].tasksList));
+  // }, []);
+
+  useEffect(() => {
+    dispatch(fetchTask({ tasksList: tasksList }));
+
+    fetch("/get")
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then((jsonRes) => setList(jsonRes[0].tasksList));
+  }, [tasksList]);
+
+  console.log("list", list);
+  console.log("taskList", tasksList);
   function dragOverHandler(e) {
     e.preventDefault();
     if (e.target.className.includes("Item")) {
@@ -35,7 +61,6 @@ const Main = () => {
   function onDropHandler(e, boardIndex, taskIndex) {
     e.preventDefault();
     e.target.style.boxShadow = "none";
-
     dispatch(
       removeTask({
         boardIndex: currentBoard,
@@ -46,7 +71,8 @@ const Main = () => {
       addDraggedElement({
         boardIndex: boardIndex,
         taskIndex: taskIndex,
-        item: tasksList[currentBoard].tasks[currentTask],
+        date: 0,
+        name: tasksList[currentBoard].tasks[currentTask],
       })
     );
   }
@@ -58,7 +84,6 @@ const Main = () => {
           taskIndex: currentTask,
         })
       );
-      console.log(tasksList[currentBoard].tasks[currentTask], boardIndex);
       dispatch(
         addTask({
           name: tasksList[currentBoard].tasks[currentTask],
@@ -69,7 +94,7 @@ const Main = () => {
   }
   return (
     <MainDivStyled>
-      {Object.keys(tasksList).map((list, boardIndex) => {
+      {Object.keys(list).map((list, boardIndex) => {
         return (
           <TaskBoardStyled
             key={`${list}_${boardIndex}`}
@@ -80,7 +105,6 @@ const Main = () => {
               <strong>{tasksList[list].name}</strong>
               <TaskModalWindow index={boardIndex} />
             </div>
-            <div></div>
             {tasksList[list].tasks.length > 0 &&
               tasksList[list].tasks.map((task, taskIndex) => {
                 return (
@@ -96,7 +120,10 @@ const Main = () => {
                     onDragEnd={(e) => onDragEndHandler(e)}
                     onDrop={(e) => onDropHandler(e, boardIndex, taskIndex)}
                   >
-                    {task}{" "}
+                    {task.title}
+                    <div style={{ fontSize: "10px", color: "gray" }}>
+                      {task[Object.keys(task)]}
+                    </div>
                     <IconButtonStyled
                       aria-label="delete"
                       id={taskIndex}
@@ -145,6 +172,7 @@ const TaskStyled = styled.div({
   padding: "20px",
   marginTop: "25px",
   borderRadius: "10px",
+  height: "20px",
   justifyContent: "space-between",
   display: "flex",
 });

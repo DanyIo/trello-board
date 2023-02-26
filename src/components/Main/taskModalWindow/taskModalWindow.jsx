@@ -22,7 +22,7 @@ export default function TaskModalWindow({ index }) {
       error = "Something shorter";
     }
     if (value.length === 0) {
-      error = "Write something";
+      error = "Empty field";
     }
     return error;
   }
@@ -49,9 +49,9 @@ export default function TaskModalWindow({ index }) {
             initialValues={{
               name: "",
             }}
-            onSubmit={({ name }) => {
+            onSubmit={async ({ name }) => {
               const data = {
-                name: name,
+                name: { title: name, date: 1000 },
                 index: index,
               };
               dispatch(addTask(data));
@@ -112,6 +112,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 300,
+  height: 125,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
