@@ -7,7 +7,7 @@ const initialState = {
 export const fetchTask = createAsyncThunk("posts/fetchPosts", async (data) => {
   try {
     const response = await axios.put(
-      "http://localhost:3001/update/63fb4d8dd87e46a6d9938af0",
+      "https://trello-app-waw9.onrender.com/update/63fb4d8dd87e46a6d9938af0",
       data
     );
     return response.data;
@@ -17,7 +17,7 @@ export const fetchTask = createAsyncThunk("posts/fetchPosts", async (data) => {
 });
 
 export const getTasks = createAsyncThunk("get/getTasks", async() => {
-  return fetch("http://localhost:3001/get").then((res) => res.json())
+  return fetch("https://trello-app-waw9.onrender.com/get").then((res) => res.json())
 })
 
 export const taskSlice = createSlice({
