@@ -10,22 +10,7 @@ app.use(express.json());
 mongoose.connect(
   "mongodb+srv://danylobodnar96:Pass1234@cluster0.uzcywzl.mongodb.net/trello-data"
 );
-const allowCrossDomain = (req, res, next) => {
-  res.header(`Access-Control-Allow-Origin`, `https://trello-app-waw9.onrender.com`);
-  res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-  res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-  next();
-};
-app.configure(() => {
-  app.use(express.bodyParser());
-  app.use(express.cookieParser());
-  app.use(express.session({ secret: `cool beans` }));
-  app.use(express.methodOverride());
-  // CORS middleware
-  app.use(allowCrossDomain);
-  app.use(app.router);
-  app.use(express.static(`public`));
-});
+
 
 app.use("/", require("./routes/taskRoute"));
 
