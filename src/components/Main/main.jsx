@@ -31,14 +31,10 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
-    console.log("tasksList",tasksList);
-    if(status !== "idle"){
+    if (status !== "idle") {
       dispatch(fetchTask({ tasksList: tasksList }));
     }
   });
-  {
-    console.log(error, status);
-  }
   function dragOverHandler(e) {
     e.preventDefault();
     if (e.target.className.includes("Item")) {
@@ -100,75 +96,81 @@ const Main = () => {
   }
   return (
     <MainDivStyled>
-      { status === "succeeded" ?  Object.keys(tasksList).map((list, boardIndex) => {
-        return (
-          <TaskBoardStyled
-            key={`${list}_${boardIndex}`}
-            onDragOver={(e) => dragOverHandler(e)}
-            onDrop={(e) => dropCardHandler(e, boardIndex)}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              {tasksList[list].tasks.length === 0 && (
-                <IconButtonStyled
-                  aria-label="delete"
-                  id={boardIndex}
-                  onClick={() =>
-                    dispatch(
-                      removeBoard({
-                        boardIndex: boardIndex,
-                      })
-                    )
-                  }
-                >
-                  <RemoveIconStyled id={boardIndex}></RemoveIconStyled>
-                </IconButtonStyled>
-              )}
-              <strong>{tasksList[list].name}</strong>
-              <TaskModalWindow index={boardIndex} />
-            </div>
-            {tasksList[list].tasks.length > 0 &&
-              tasksList[list].tasks.map((task, taskIndex) => {
-                return (
-                  <TaskStyled
-                    className={"Item"}
-                    key={`${task}_${taskIndex}`}
-                    draggable={true}
-                    onDragOver={(e) => dragOverHandler(e)}
-                    onDragLeave={(e) => onDragLeaveHandler(e)}
-                    onDragStart={(e) =>
-                      onDragStartHandler(e, boardIndex, taskIndex)
+      {status === "succeeded" ? (
+        Object.keys(tasksList).map((list, boardIndex) => {
+          return (
+            <TaskBoardStyled
+              key={`${list}_${boardIndex}`}
+              onDragOver={(e) => dragOverHandler(e)}
+              onDrop={(e) => dropCardHandler(e, boardIndex)}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                {tasksList[list].tasks.length === 0 && (
+                  <IconButtonStyled
+                    aria-label="delete"
+                    id={boardIndex}
+                    onClick={() =>
+                      dispatch(
+                        removeBoard({
+                          boardIndex: boardIndex,
+                        })
+                      )
                     }
-                    onDragEnd={(e) => onDragEndHandler(e)}
-                    onDrop={(e) => onDropHandler(e, boardIndex, taskIndex)}
                   >
-                    <ChangeTaskModalWindow
-                      boardIndex={boardIndex}
-                      taskIndex={taskIndex}
-                    />
-                    {task.title}
-                    <div style={{ fontSize: "10px", color: "gray" }}>
-                      {showTime(task.date)}
-                    </div>
-                    <IconButtonStyled
-                      aria-label="delete"
-                      id={taskIndex}
-                      onClick={() =>
-                        dispatch(
-                          removeTask({
-                            boardIndex: boardIndex,
-                            taskIndex: taskIndex,
-                          })
-                        )
+                    <RemoveIconStyled id={boardIndex}></RemoveIconStyled>
+                  </IconButtonStyled>
+                )}
+                <strong>{tasksList[list].name}</strong>
+                <TaskModalWindow index={boardIndex} />
+              </div>
+              {tasksList[list].tasks.length > 0 &&
+                tasksList[list].tasks.map((task, taskIndex) => {
+                  return (
+                    <TaskStyled
+                      className={"Item"}
+                      key={`${task}_${taskIndex}`}
+                      draggable={true}
+                      onDragOver={(e) => dragOverHandler(e)}
+                      onDragLeave={(e) => onDragLeaveHandler(e)}
+                      onDragStart={(e) =>
+                        onDragStartHandler(e, boardIndex, taskIndex)
                       }
+                      onDragEnd={(e) => onDragEndHandler(e)}
+                      onDrop={(e) => onDropHandler(e, boardIndex, taskIndex)}
                     >
-                      <DeleteIconStyled id={taskIndex}></DeleteIconStyled>
-                    </IconButtonStyled>
-                  </TaskStyled>
-                );
-              })}
-          </TaskBoardStyled>
-        );
-      }): <CenterLoader><Loader></Loader></CenterLoader>} 
+                      <ChangeTaskModalWindow
+                        boardIndex={boardIndex}
+                        taskIndex={taskIndex}
+                      />
+                      {task.title}
+                      <div style={{ fontSize: "10px", color: "gray" }}>
+                        {showTime(task.date)}
+                      </div>
+                      <IconButtonStyled
+                        aria-label="delete"
+                        id={taskIndex}
+                        onClick={() =>
+                          dispatch(
+                            removeTask({
+                              boardIndex: boardIndex,
+                              taskIndex: taskIndex,
+                            })
+                          )
+                        }
+                      >
+                        <DeleteIconStyled id={taskIndex}></DeleteIconStyled>
+                      </IconButtonStyled>
+                    </TaskStyled>
+                  );
+                })}
+            </TaskBoardStyled>
+          );
+        })
+      ) : (
+        <CenterLoader>
+          <Loader></Loader>
+        </CenterLoader>
+      )}
     </MainDivStyled>
   );
 };

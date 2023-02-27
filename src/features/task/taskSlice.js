@@ -67,18 +67,18 @@ export const taskSlice = createSlice({
         actions.payload.taskIndex
       ].date = actions.payload.date;
     },
-    sortTasks: (state) =>{
-     for(let i in state.tasksList){
-      state.tasksList[i].tasks.sort((a,b) => {
-        return a.date - b.date
-      })
-     }
-    }
+    sortTasks: (state) => {
+      for (let i in state.tasksList) {
+        state.tasksList[i].tasks.sort((a, b) => {
+          return a.date - b.date;
+        });
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getTasks.fulfilled, (state, actions) => {
-        console.log("data",actions.payload[0].tasksList)
+        console.log("data", actions.payload[0].tasksList);
         state.tasksList = actions.payload[0].tasksList;
         state.status = "succeeded";
       })
@@ -100,7 +100,7 @@ export const {
   addDraggedElement,
   removeBoard,
   changeTask,
-  sortTasks
+  sortTasks,
 } = taskSlice.actions;
 
 export const selectTaskList = (state) => state.task.tasksList;

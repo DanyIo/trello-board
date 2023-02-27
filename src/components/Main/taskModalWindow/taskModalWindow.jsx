@@ -51,7 +51,7 @@ export default function TaskModalWindow({ index }) {
             }}
             onSubmit={async ({ name }) => {
               const data = {
-                name: { title: name, date: Date.now()},
+                name: { title: name, date: Date.now() },
                 index: index,
               };
               dispatch(addTask(data));

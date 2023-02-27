@@ -11,7 +11,6 @@ mongoose.connect(
   "mongodb+srv://danylobodnar96:Pass1234@cluster0.uzcywzl.mongodb.net/trello-data"
 );
 
-
 app.use("/", require("./routes/taskRoute"));
 
 app.get("/:universalURL", (req, res) => {
@@ -41,5 +40,3 @@ app.put("/update/:id", async (req, res) => {
     }
   );
 });
-
-

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import BasicModal from "./ModalWindow/modalWindow";
 const Header = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   return (
     <div>
       <HeaderStyled>
@@ -51,7 +51,7 @@ const TitleStyled = styled.h1({
 });
 const SortIconStyled = styled(SortIcon)(() => ({
   color: "white",
-  position:"absolute"
+  position: "absolute",
 }));
 const IconButtonStyled = styled(IconButton)(() => ({
   float: "right",

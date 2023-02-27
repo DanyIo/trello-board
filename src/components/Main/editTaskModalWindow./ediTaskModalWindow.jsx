@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { Formik, Form, Field } from "formik";
 import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
-import {changeTask } from "../../../features/task/taskSlice";
+import { changeTask } from "../../../features/task/taskSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton } from "@mui/material";
 
@@ -53,9 +53,9 @@ export default function ChangeTaskModalWindow({ boardIndex, taskIndex }) {
                 title: name,
                 boardIndex: boardIndex,
                 taskIndex: taskIndex,
-                date: Date.now()
+                date: Date.now(),
               };
-             dispatch(changeTask(data));
+              dispatch(changeTask(data));
               handleClose();
             }}
           >
