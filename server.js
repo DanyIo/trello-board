@@ -14,6 +14,10 @@ mongoose.connect(
 
 app.use("/", require("./routes/taskRoute"));
 
+app.get("/:universalURL", (req, res) => {
+  res.send("404 URL NOT FOUND");
+});
+
 app.listen(3001, function () {
   console.log("Running on port 3001");
 });
