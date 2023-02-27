@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import RemoveIcon from "@mui/icons-material/Remove";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   selectTaskList,
   removeTask,
@@ -11,13 +10,18 @@ import {
   fetchTask,
   getTasks,
   removeBoard,
+  selectError,
+  selectStatus,
 } from "../../features/task/taskSlice";
 import IconButton from "@mui/material/IconButton";
+import Loader from "./Loader/loader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TaskModalWindow from "./taskModalWindow/taskModalWindow";
 import ChangeTaskModalWindow from "./editTaskModalWindow./ediTaskModalWindow";
 const Main = () => {
   const dispatch = useDispatch();
+  const error = useSelector(selectError);
+  const status = useSelector(selectStatus);
   const tasksList = useSelector(selectTaskList);
   const [currentBoard, setCurrentBoard] = useState();
   const [currentTask, setCurrentTask] = useState();
@@ -27,9 +31,14 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchTask({ tasksList: tasksList }));
+    console.log("tasksList",tasksList);
+    if(status !== "idle"){
+      dispatch(fetchTask({ tasksList: tasksList }));
+    }
   });
-
+  {
+    console.log(error, status);
+  }
   function dragOverHandler(e) {
     e.preventDefault();
     if (e.target.className.includes("Item")) {
@@ -91,7 +100,7 @@ const Main = () => {
   }
   return (
     <MainDivStyled>
-      {Object.keys(tasksList).map((list, boardIndex) => {
+      { status === "succeeded" ?  Object.keys(tasksList).map((list, boardIndex) => {
         return (
           <TaskBoardStyled
             key={`${list}_${boardIndex}`}
@@ -131,7 +140,12 @@ const Main = () => {
                     }
                     onDragEnd={(e) => onDragEndHandler(e)}
                     onDrop={(e) => onDropHandler(e, boardIndex, taskIndex)}
-                  ><ChangeTaskModalWindow boardIndex = {boardIndex} taskIndex ={taskIndex}/>{task.title}
+                  >
+                    <ChangeTaskModalWindow
+                      boardIndex={boardIndex}
+                      taskIndex={taskIndex}
+                    />
+                    {task.title}
                     <div style={{ fontSize: "10px", color: "gray" }}>
                       {showTime(task.date)}
                     </div>
@@ -149,13 +163,12 @@ const Main = () => {
                     >
                       <DeleteIconStyled id={taskIndex}></DeleteIconStyled>
                     </IconButtonStyled>
-
                   </TaskStyled>
                 );
               })}
           </TaskBoardStyled>
         );
-      })}
+      }): <CenterLoader><Loader></Loader></CenterLoader>} 
     </MainDivStyled>
   );
 };
@@ -202,9 +215,11 @@ const DeleteIconStyled = styled(DeleteIcon)(() => ({
   position: "absolute",
   color: "white",
 }));
-const EditIconStyled = styled(EditIcon)(() => ({
-  float: "right",
+
+const CenterLoader = styled.div({
   position: "absolute",
-  color: "white",
-}));
+  top: "50%",
+  left: "47%",
+  margin: "-25px 0 0 -25px",
+});
 export default Main;
