@@ -180,6 +180,7 @@ const MainDivStyled = styled.div({
   flexDirection: "row",
   justifyContent: "flex-start",
   alignItems: "flex-start",
+  flexWrap:"wrap"
 });
 const RemoveIconStyled = styled(RemoveIcon)(() => ({
   color: "black",
@@ -188,7 +189,7 @@ const RemoveIconStyled = styled(RemoveIcon)(() => ({
 const TaskBoardStyled = styled.div({
   padding: "20px",
   height: "20%",
-  width: "20%",
+  width: "280px",
   background: "white",
   boxShadow: "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
   borderRadius: "20px",
