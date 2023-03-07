@@ -143,7 +143,7 @@ const Main = () => {
                         taskIndex={taskIndex}
                       />
                       {task.title}
-                      <div style={{ fontSize: "10px", color: "gray" }}>
+                      <div style={{ fontSize: "10px", color: "gray", alignSelf:"flex-end"}}>
                         {showTime(task.date)}
                       </div>
                       <IconButtonStyled
